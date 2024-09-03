@@ -34,7 +34,7 @@ const Auth = () => {
   
   const handleSignup = async() => {
     if(validateSignup()) {
-      const response = await apiClient.post(SIGNUP_ROUTES,{email,password});
+      const response = await apiClient.post(SIGNUP_ROUTES,{ email, password});
       console.log({ response });
     }
   };
