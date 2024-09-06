@@ -7,9 +7,12 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
 import { LOGIN_ROUTES, SIGNUP_ROUTES } from "@/utils/constants";
+import { useNavigate } from "react-router-dom";
+
 
 
 const Auth = () => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState(false);
@@ -42,14 +45,22 @@ const Auth = () => {
     return true;
   };
 
-  const handleLogin = async() => {
+  const handleLogin = async () => {
     if (validateLogin()) {
-      const response = await apiClient.post(
-        LOGIN_ROUTES,
-         {email,password },
-         {withCredentials: true}
-      )}
-      console.log({ response })
+      try {
+        const response = await apiClient.post(
+          LOGIN_ROUTES,
+          { email, password },
+          { withCredentials: true }
+        );
+  
+        console.log({ response }); 
+      } catch (error) {
+        console.error('Error during login:', error); 
+      }
+    } else {
+      console.log('Login validation failed'); 
+    }
   };
 
   const handleSignup = async () => {
