@@ -8,11 +8,13 @@ import { toast } from "sonner";
 import { apiClient } from "@/lib/api-client";
 import { LOGIN_ROUTES, SIGNUP_ROUTES } from "@/utils/constants";
 import { useNavigate } from "react-router-dom";
+import { useAppStore } from "@/store";
 
 
 
 const Auth = () => {
   const navigate = useNavigate();
+  const { setUserInfo } = useAppStore();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setconfirmPassword] = useState(false);
@@ -53,7 +55,11 @@ const Auth = () => {
           { email, password },
           { withCredentials: true }
         );
-  
+        if (response.data.user.id) {
+          setUserInfo(response.data.user);
+          if (response.data.user.profileSetup) navigate("/chat")
+            else navigate("/profile");
+        }
         console.log({ response }); 
       } catch (error) {
         console.error('Error during login:', error); 
@@ -70,6 +76,10 @@ const Auth = () => {
         { email, password },
         { withCredentials: true }
       );
+      if (response.status === 201) {
+        setUserInfo(response.data.user);
+        navigate("/profile");
+      }
       console.log({ response });
     }
   };
@@ -88,7 +98,7 @@ const Auth = () => {
             </p>
           </div>
           <div className="flex items-center justify-center w-full">
-            <Tabs className="w-3/4">
+            <Tabs className="w-3/4" defaultValue="login">
               <TabsList className="bg-transparent rounded-none w-full">
                 <TabsTrigger
                   value="login"
